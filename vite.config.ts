@@ -11,7 +11,7 @@ declare module "@remix-run/node" {
 export default defineConfig({
   plugins: [
     remix({
-      basename: "/t",
+      basename: "/u",
       future: {
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
