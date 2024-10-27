@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@remix-run/react";
-import { Binary, LucideProps } from "lucide-react";
+import { Binary, Clock, LucideProps } from "lucide-react";
 
 import {
   Sidebar,
@@ -26,6 +26,11 @@ export const menuItems: Record<
     title: "Number Base Converter",
     url: "/number-base-converter",
     icon: Binary,
+  },
+  "/unix-time-converter": {
+    title: "Unix Time Converter",
+    url: "/unix-time-converter",
+    icon: Clock,
   },
 };
 

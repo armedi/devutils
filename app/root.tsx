@@ -9,7 +9,6 @@ import {
 } from "@remix-run/react";
 
 import { AppSidebar, menuItems } from "~/components/app-sidebar";
-import { Separator } from "~/components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "~/components/ui/sidebar";
 
 import "./tailwind.css";
@@ -55,12 +54,11 @@ export default function App() {
     <SidebarProvider>
       <AppSidebar />
       <main className="flex-1 flex flex-col h-dvh">
-        <header className="h-8 relative flex justify-center items-center text-sidebar-foreground/70">
+        <header className="h-8 relative flex justify-center items-center border-b border-border text-sidebar-foreground/70">
           <SidebarTrigger className="absolute top-[2px] left-2" />
           <h1 className="text-xs font-medium">{title}</h1>
         </header>
-        <Separator />
-        <div className="flex-1 overflow-auto p-1 md:p-4">
+        <div className="flex-1 overflow-auto py-2 md:py-4">
           <Outlet />
         </div>
       </main>

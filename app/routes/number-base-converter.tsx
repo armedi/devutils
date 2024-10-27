@@ -294,7 +294,7 @@ export default function NumberBaseConverter() {
   );
 
   return (
-    <div className="p-4 grid gap-4">
+    <div className="space-y-4 px-1 md:px-4">
       <NumberBase
         id={binaryId}
         label="Base 2 (Binary)"
