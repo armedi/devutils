@@ -1,12 +1,9 @@
-import type { MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "DevUtils" },
-    { name: "description", content: "DevUtils" },
-  ];
+export const loader = () => {
+  return redirect("/number-base-converter", 307);
 };
 
 export default function Index() {
-  return <div></div>;
+  return null;
 }

@@ -18,7 +18,15 @@ import {
 export const meta: MetaFunction = () => {
   return [
     { title: "DevUtils - Number Base Converter" },
-    { name: "description", content: "DevUtils - Number Base Converter" },
+    { name: "description", content: "Convert numbers between different bases including binary, octal, decimal, hexadecimal, and custom bases with ease using DevUtils." },
+    { name: "keywords", content: "Number Base Converter, Binary to Decimal, Hexadecimal to Binary, Decimal to Hex, Custom Base Conversion, DevUtils" },
+    { name: "author", content: "Armedi" },
+    { property: "og:title", content: "DevUtils - Number Base Converter" },
+    { property: "og:description", content: "Easily convert numbers across various bases with this efficient tool." },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://armedi.id/u/number-base-converter" },
+    { name: "twitter:title", content: "DevUtils - Number Base Converter" },
+    { name: "twitter:description", content: "Effortlessly convert numbers between binary, octal, decimal, hex, and custom bases with DevUtils." },
   ];
 };
 
