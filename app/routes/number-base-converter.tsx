@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useId, useState, useCallback } from "react";
 import { Copy } from "lucide-react";
+import { useCallback, useId, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -14,19 +14,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useIsMobile } from "~/hooks/use-mobile";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "DevUtils - Number Base Converter" },
-    { name: "description", content: "Convert numbers between different bases including binary, octal, decimal, hexadecimal, and custom bases with ease using DevUtils." },
-    { name: "keywords", content: "Number Base Converter, Binary to Decimal, Hexadecimal to Binary, Decimal to Hex, Custom Base Conversion, DevUtils" },
+    {
+      name: "description",
+      content:
+        "Convert numbers between different bases including binary, octal, decimal, hexadecimal, and custom bases with ease using DevUtils.",
+    },
+    {
+      name: "keywords",
+      content:
+        "Number Base Converter, Binary to Decimal, Hexadecimal to Binary, Decimal to Hex, Custom Base Conversion, DevUtils",
+    },
     { name: "author", content: "Armedi" },
     { property: "og:title", content: "DevUtils - Number Base Converter" },
-    { property: "og:description", content: "Easily convert numbers across various bases with this efficient tool." },
+    {
+      property: "og:description",
+      content:
+        "Easily convert numbers across various bases with this efficient tool.",
+    },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://devutils.armedi.id/number-base-converter" },
+    {
+      property: "og:url",
+      content: "https://devutils.armedi.id/number-base-converter",
+    },
     { name: "twitter:title", content: "DevUtils - Number Base Converter" },
-    { name: "twitter:description", content: "Effortlessly convert numbers between binary, octal, decimal, hex, and custom bases with DevUtils." },
+    {
+      name: "twitter:description",
+      content:
+        "Effortlessly convert numbers between binary, octal, decimal, hex, and custom bases with DevUtils.",
+    },
   ];
 };
 
@@ -38,23 +58,27 @@ const isValidForBase = (value: string, base: number) => {
   return regex.test(value);
 };
 
-const convertBase = (value: string, fromBase: number, toBase: number): string => {
+const convertBase = (
+  value: string,
+  fromBase: number,
+  toBase: number
+): string => {
   if (!value) return "";
-  
+
   // Split into integer and fractional parts
   const [intPart, fracPart = ""] = value.split(".");
-  
+
   // Convert integer part
   const decimal = parseInt(intPart, fromBase);
   let result = decimal.toString(toBase);
-  
+
   // Convert fractional part if exists
   if (fracPart) {
     let fraction = 0;
     for (let i = 0; i < fracPart.length; i++) {
       fraction += parseInt(fracPart[i], fromBase) / Math.pow(fromBase, i + 1);
     }
-    
+
     // Convert fraction to target base
     let fractionalPart = ".";
     const precision = 8; // Maximum precision for fractional part
@@ -65,10 +89,10 @@ const convertBase = (value: string, fromBase: number, toBase: number): string =>
       fraction -= digit;
       if (fraction === 0) break;
     }
-    
+
     result += fractionalPart;
   }
-  
+
   return result.toLowerCase();
 };
 
@@ -106,6 +130,8 @@ function NumberBase({
   onCopy,
   customBase,
 }: NumberBaseProps) {
+  const isMobile = useIsMobile();
+
   return (
     <div className="grid w-full items-center gap-1.5">
       <div className="flex items-center gap-3">
@@ -114,7 +140,7 @@ function NumberBase({
             <>
               <span>Select base: </span>
               <span className="inline-block ml-2">
-                <Select 
+                <Select
                   value={customBase.value}
                   onValueChange={customBase.onChange}
                 >
@@ -124,11 +150,13 @@ function NumberBase({
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Base</SelectLabel>
-                      {Array.from({ length: 31 }, (_, i) => i + 2).map((base) => (
-                        <SelectItem key={base} value={`${base}`}>
-                          {base}
-                        </SelectItem>
-                      ))}
+                      {Array.from({ length: 31 }, (_, i) => i + 2).map(
+                        (base) => (
+                          <SelectItem key={base} value={`${base}`}>
+                            {base}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -141,14 +169,14 @@ function NumberBase({
         <Button
           variant="ghost"
           size="sm"
-          className="py-1 h-auto rounded-xl text-xs text-slate-500"
+          className="py-1 h-auto rounded-xl text-xs text-muted-foreground"
           onClick={() => onClear(base)}
         >
           Clear
         </Button>
       </div>
       <div className="flex w-full items-center space-x-2">
-        <Input 
+        <Input
           id={id}
           placeholder={placeholder}
           className="flex-1"
@@ -156,7 +184,7 @@ function NumberBase({
           onChange={(e) => onChange(e.target.value, base)}
         />
         <Button onClick={() => onCopy(value)}>
-          <Copy /> Copy
+          {!isMobile && <Copy />} Copy
         </Button>
       </div>
     </div>
@@ -179,69 +207,91 @@ export default function NumberBaseConverter() {
   });
   const [customBase, setCustomBase] = useState("32");
 
-  const handleInputChange = useCallback((value: string, base: keyof BaseValues | number) => {
-    const baseNumber = typeof base === "number" ? base : parseInt(base);
-    if (base === "custom") {
-      if (!isValidForBase(value, parseInt(customBase))) return;
-    } else {
-      if (!isValidForBase(value, baseNumber)) return;
-    }
-
-    const newValues = { ...values, [base]: value };
-    
-    if (value) {
-      // Convert from the changed base to all other bases
-      const sourceBase = base === "custom" ? parseInt(customBase) : baseNumber;
-      const sourceValue = value;
-
-      [2, 8, 10, 16].forEach((targetBase) => {
-        if (targetBase !== sourceBase) {
-          newValues[targetBase.toString() as keyof BaseValues] = convertBase(sourceValue, sourceBase, targetBase);
-        }
-      });
-      
-      if (sourceBase !== parseInt(customBase)) {
-        newValues.custom = convertBase(sourceValue, sourceBase, parseInt(customBase));
+  const handleInputChange = useCallback(
+    (value: string, base: keyof BaseValues | number) => {
+      const baseNumber = typeof base === "number" ? base : parseInt(base);
+      if (base === "custom") {
+        if (!isValidForBase(value, parseInt(customBase))) return;
+      } else {
+        if (!isValidForBase(value, baseNumber)) return;
       }
-    } else {
-      // Clear all values if input is empty
-      Object.keys(newValues).forEach((key) => {
-        newValues[key as keyof BaseValues] = "";
-      });
-    }
 
-    setValues(newValues);
-  }, [values, customBase]);
+      const newValues = { ...values, [base]: value };
+
+      if (value) {
+        // Convert from the changed base to all other bases
+        const sourceBase =
+          base === "custom" ? parseInt(customBase) : baseNumber;
+        const sourceValue = value;
+
+        [2, 8, 10, 16].forEach((targetBase) => {
+          if (targetBase !== sourceBase) {
+            newValues[targetBase.toString() as keyof BaseValues] = convertBase(
+              sourceValue,
+              sourceBase,
+              targetBase
+            );
+          }
+        });
+
+        if (sourceBase !== parseInt(customBase)) {
+          newValues.custom = convertBase(
+            sourceValue,
+            sourceBase,
+            parseInt(customBase)
+          );
+        }
+      } else {
+        // Clear all values if input is empty
+        Object.keys(newValues).forEach((key) => {
+          newValues[key as keyof BaseValues] = "";
+        });
+      }
+
+      setValues(newValues);
+    },
+    [values, customBase]
+  );
 
   const handleCopy = useCallback(async (value: string) => {
     await navigator.clipboard.writeText(value);
   }, []);
 
-  const handleClear = useCallback((base: keyof BaseValues | number) => {
-    handleInputChange("", base);
-  }, [handleInputChange]);
+  const handleClear = useCallback(
+    (base: keyof BaseValues | number) => {
+      handleInputChange("", base);
+    },
+    [handleInputChange]
+  );
 
-  const handleCustomBaseChange = useCallback((newBase: string) => {
-    const oldBase = parseInt(customBase);
-    const newBaseNum = parseInt(newBase);
-    setCustomBase(newBase);
+  const handleCustomBaseChange = useCallback(
+    (newBase: string) => {
+      const oldBase = parseInt(customBase);
+      const newBaseNum = parseInt(newBase);
+      setCustomBase(newBase);
 
-    // If there's a value in any of the inputs, convert it to the new base
-    const nonEmptyValue = Object.entries(values).find(([key, value]) => {
-      if (key === "custom") return false;
-      return value !== "";
-    });
+      // If there's a value in any of the inputs, convert it to the new base
+      const nonEmptyValue = Object.entries(values).find(([key, value]) => {
+        if (key === "custom") return false;
+        return value !== "";
+      });
 
-    if (nonEmptyValue) {
-      const [sourceBase, value] = nonEmptyValue;
-      const newCustomValue = convertBase(value, parseInt(sourceBase), newBaseNum);
-      setValues(prev => ({ ...prev, custom: newCustomValue }));
-    } else if (values.custom) {
-      // If only custom value exists, convert it from old base to new base
-      const newCustomValue = convertBase(values.custom, oldBase, newBaseNum);
-      setValues(prev => ({ ...prev, custom: newCustomValue }));
-    }
-  }, [customBase, values]);
+      if (nonEmptyValue) {
+        const [sourceBase, value] = nonEmptyValue;
+        const newCustomValue = convertBase(
+          value,
+          parseInt(sourceBase),
+          newBaseNum
+        );
+        setValues((prev) => ({ ...prev, custom: newCustomValue }));
+      } else if (values.custom) {
+        // If only custom value exists, convert it from old base to new base
+        const newCustomValue = convertBase(values.custom, oldBase, newBaseNum);
+        setValues((prev) => ({ ...prev, custom: newCustomValue }));
+      }
+    },
+    [customBase, values]
+  );
 
   return (
     <div className="p-4 grid gap-4">

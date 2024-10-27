@@ -60,7 +60,7 @@ export default function App() {
           <h1 className="text-xs font-medium">{title}</h1>
         </header>
         <Separator />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex-1 overflow-auto p-1 md:p-4">
           <Outlet />
         </div>
       </main>
