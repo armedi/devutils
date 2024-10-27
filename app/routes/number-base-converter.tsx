@@ -242,7 +242,7 @@ export default function NumberBaseConverter() {
         label="Base 2 (Binary)"
         base={2}
         value={values["2"]}
-        placeholder="10101"
+        placeholder="1000111001011101100011101010"
         onChange={handleInputChange}
         onClear={handleClear}
         onCopy={handleCopy}
@@ -252,7 +252,7 @@ export default function NumberBaseConverter() {
         label="Base 8 (Octal)"
         base={8}
         value={values["8"]}
-        placeholder="124753"
+        placeholder="1071354352"
         onChange={handleInputChange}
         onClear={handleClear}
         onCopy={handleCopy}
@@ -272,7 +272,7 @@ export default function NumberBaseConverter() {
         label="Base 16 (Hex)"
         base={16}
         value={values["16"]}
-        placeholder="1a2b549f"
+        placeholder="8e5d8ea"
         onChange={handleInputChange}
         onClear={handleClear}
         onCopy={handleCopy}
