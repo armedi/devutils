@@ -1,3 +1,4 @@
+import type { MetaFunction } from "@remix-run/node";
 import dayjs from "dayjs";
 import dayOfYear from "dayjs/plugin/dayOfYear";
 import isLeapYear from "dayjs/plugin/isLeapYear";
@@ -21,6 +22,51 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { cn } from "~/lib/utils";
 
+export const meta: MetaFunction = () => {
+  return [
+    {
+      title:
+        "DevUtils - Unix Time Converter - Convert Unix Timestamps, ISO 8601, and Milliseconds",
+    },
+    {
+      name: "description",
+      content:
+        "Free online Unix timestamp converter. Convert between Unix timestamps, ISO 8601 dates, and milliseconds. Features local time, UTC, relative time, day/week of year calculations, and multiple date formats.",
+    },
+    {
+      name: "keywords",
+      content:
+        "unix timestamp converter, epoch converter, unix time, iso 8601, timestamp to date, date to timestamp, milliseconds converter, utc converter",
+    },
+    {
+      property: "og:title",
+      content:
+        "DevUtils -Unix Time Converter - Convert Unix Timestamps, ISO 8601, and Milliseconds",
+    },
+    {
+      property: "og:description",
+      content:
+        "Free online Unix timestamp converter. Convert between Unix timestamps, ISO 8601 dates, and milliseconds. Features local time, UTC, relative time, day/week of year calculations, and multiple date formats.",
+    },
+    { property: "og:type", content: "website" },
+    {
+      property: "og:url",
+      content: "https://devutils.armedi.id/unix-time-converter",
+    },
+    { name: "twitter:card", content: "summary" },
+    {
+      name: "twitter:title",
+      content:
+        "Unix Time Converter - Convert Unix Timestamps, ISO 8601, and Milliseconds",
+    },
+    {
+      name: "twitter:description",
+      content:
+        "Free online Unix timestamp converter. Convert between Unix timestamps, ISO 8601 dates, and milliseconds. Features local time, UTC, relative time, day/week of year calculations, and multiple date formats.",
+    },
+  ];
+};
+
 dayjs.extend(utc);
 dayjs.extend(relativeTime);
 dayjs.extend(weekOfYear);
@@ -31,19 +77,19 @@ dayjs.extend(localizedFormat);
 // Types
 type InputFormat = "unix" | "ms" | "iso";
 type TimeUnit = {
-  unit: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
+  unit: "year" | "month" | "day" | "hour" | "minute" | "second";
   label: string;
   manipulateType: dayjs.ManipulateType;
 };
 
 // Constants
 const TIME_UNITS: TimeUnit[] = [
-  { unit: 'year', label: 'yr', manipulateType: 'year' },
-  { unit: 'month', label: 'mo', manipulateType: 'month' },
-  { unit: 'day', label: 'd', manipulateType: 'day' },
-  { unit: 'hour', label: 'hr', manipulateType: 'hour' },
-  { unit: 'minute', label: 'min', manipulateType: 'minute' },
-  { unit: 'second', label: 'sec', manipulateType: 'second' }
+  { unit: "year", label: "yr", manipulateType: "year" },
+  { unit: "month", label: "mo", manipulateType: "month" },
+  { unit: "day", label: "d", manipulateType: "day" },
+  { unit: "hour", label: "hr", manipulateType: "hour" },
+  { unit: "minute", label: "min", manipulateType: "minute" },
+  { unit: "second", label: "sec", manipulateType: "second" },
 ];
 
 const DATE_FORMAT_OPTIONS = [
@@ -57,13 +103,13 @@ const DATE_FORMAT_OPTIONS = [
 
 const INPUT_VALIDATION = {
   NUMERIC: /^[0-9+\-*/ ().\s]*$/,
-  ISO: /^[0-9-:T.Z+]*$/
+  ISO: /^[0-9-:T.Z+]*$/,
 } as const;
 
 const FORMAT_PLACEHOLDERS: Record<InputFormat, string> = {
   iso: "2024-01-01T00:00:00.000+07:00",
   ms: "1704067200000",
-  unix: "1704067200"
+  unix: "1704067200",
 } as const;
 
 // Interfaces
@@ -91,19 +137,19 @@ function useInterval(callback: () => void, delay: number | null) {
 // Utility functions
 function calculateTimeDifference(earlier: dayjs.Dayjs, later: dayjs.Dayjs) {
   let current = earlier;
-  const result = new Map<TimeUnit['unit'], number>();
+  const result = new Map<TimeUnit["unit"], number>();
 
   for (const { unit, manipulateType } of TIME_UNITS) {
-    if (unit === 'month') {
+    if (unit === "month") {
       let years = later.year() - current.year();
       let months = later.month() - current.month();
       if (months < 0) {
         years--;
         months += 12;
       }
-      result.set('year', years);
-      result.set('month', months);
-      current = current.add(years, 'year').add(months, 'month');
+      result.set("year", years);
+      result.set("month", months);
+      current = current.add(years, "year").add(months, "month");
     } else {
       const value = Math.floor(later.diff(current, unit, true));
       result.set(unit, value);
@@ -114,15 +160,18 @@ function calculateTimeDifference(earlier: dayjs.Dayjs, later: dayjs.Dayjs) {
   return result;
 }
 
-function parseDateInput(value: string, format: InputFormat): dayjs.Dayjs | null {
+function parseDateInput(
+  value: string,
+  format: InputFormat
+): dayjs.Dayjs | null {
   try {
-    const evaluatedValue = format !== "iso" 
-      ? new Function(`return ${value}`)() 
-      : value;
+    const evaluatedValue =
+      format !== "iso" ? new Function(`return ${value}`)() : value;
 
-    const parsedDate = format === "unix" 
-      ? dayjs.unix(Number(evaluatedValue))
-      : format === "ms" 
+    const parsedDate =
+      format === "unix"
+        ? dayjs.unix(Number(evaluatedValue))
+        : format === "ms"
         ? dayjs(Number(evaluatedValue))
         : dayjs(evaluatedValue);
 
@@ -136,9 +185,9 @@ function convertToFormat(date: dayjs.Dayjs, format: InputFormat): string {
   const formatMap: Record<InputFormat, () => string> = {
     unix: () => String(date.unix()),
     ms: () => String(date.valueOf()),
-    iso: () => date.format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+    iso: () => date.format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
   };
-  
+
   return formatMap[format]();
 }
 
@@ -146,20 +195,18 @@ function getExactRelativeTime(date: dayjs.Dayjs) {
   const now = dayjs();
   const isPast = now.isAfter(date);
   const [earlier, later] = isPast ? [date, now] : [now, date];
-  
+
   const differences = calculateTimeDifference(earlier, later);
-  
-  const parts = TIME_UNITS
-    .map(({ unit, label }) => {
-      const value = differences.get(unit) || 0;
-      return value > 0 ? `${value}${label}` : '';
-    })
-    .filter(Boolean);
+
+  const parts = TIME_UNITS.map(({ unit, label }) => {
+    const value = differences.get(unit) || 0;
+    return value > 0 ? `${value}${label}` : "";
+  }).filter(Boolean);
 
   if (parts.length === 0) {
-    parts.push('0sec');
+    parts.push("0sec");
   }
-  
+
   return `${parts.join(" ")} ${isPast ? "ago" : "from now"}`;
 }
 
@@ -187,9 +234,9 @@ function RelativeTime({ date }: { date: dayjs.Dayjs | null }) {
   useInterval(() => setTick({}), date ? 1000 : null);
 
   return (
-    <TimeDisplayField 
-      label="Relative:" 
-      value={date ? getExactRelativeTime(date) : "-"} 
+    <TimeDisplayField
+      label="Relative:"
+      value={date ? getExactRelativeTime(date) : "-"}
     />
   );
 }
@@ -226,9 +273,8 @@ export default function UnixTimeConverter() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    const regex = inputFormat === "iso" 
-      ? INPUT_VALIDATION.ISO 
-      : INPUT_VALIDATION.NUMERIC;
+    const regex =
+      inputFormat === "iso" ? INPUT_VALIDATION.ISO : INPUT_VALIDATION.NUMERIC;
 
     if (newValue === "" || regex.test(newValue)) {
       setInputValue(newValue);
@@ -305,7 +351,7 @@ export default function UnixTimeConverter() {
           />
           <TimeDisplayField
             label="UTC (ISO 8601):"
-            value={date ? date.utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') : "-"}
+            value={date ? date.utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]") : "-"}
           />
           <RelativeTime date={date} />
           <TimeDisplayField

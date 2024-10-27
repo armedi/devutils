@@ -18,11 +18,14 @@ import { useIsMobile } from "~/hooks/use-mobile";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "DevUtils - Number Base Converter" },
+    {
+      title:
+        "DevUtils - Number Base Converter - Convert Binary, Octal, Decimal, Hexadecimal, and Custom Bases",
+    },
     {
       name: "description",
       content:
-        "Convert numbers between different bases including binary, octal, decimal, hexadecimal, and custom bases with ease using DevUtils.",
+        "Convert numbers between different bases for free, including binary, octal, decimal, hexadecimal, and custom bases with ease using DevUtils.",
     },
     {
       name: "keywords",
