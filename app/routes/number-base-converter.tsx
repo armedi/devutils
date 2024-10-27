@@ -24,7 +24,7 @@ export const meta: MetaFunction = () => {
     { property: "og:title", content: "DevUtils - Number Base Converter" },
     { property: "og:description", content: "Easily convert numbers across various bases with this efficient tool." },
     { property: "og:type", content: "website" },
-    { property: "og:url", content: "https://armedi.id/u/number-base-converter" },
+    { property: "og:url", content: "https://devutils.armedi.id/number-base-converter" },
     { name: "twitter:title", content: "DevUtils - Number Base Converter" },
     { name: "twitter:description", content: "Effortlessly convert numbers between binary, octal, decimal, hex, and custom bases with DevUtils." },
   ];
